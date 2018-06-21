@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.palladiosimulator.scheduler.feature_4.1.0.qualifier.jar" id="org.palladiosimulator.scheduler.feature" version="4.1.0.qualifier">
+      <category name="org.palladiosimulator.support.category"/>
+   </feature>
+      <feature url="features/org.palladiosimulator.scheduler.feature.source_4.1.0.qualifier.jar" id="org.palladiosimulator.scheduler.feature.source" version="4.1.0.qualifier">
+      <category name="org.palladiosimulator.support.source.category"/>
+   </feature>
+   <category-def name="org.palladiosimulator.support.category" label="Palladio Supporting Features">
+      <description>
+         Features that support the Palladio Bench tooling, but also could be used independently
+      </description>
+   </category-def>
+   <category-def name="org.palladiosimulator.support.source.category" label="Palladio Supporting Features Source">
+      <description>
+         Source code of the features that support the Palladio Bench tooling, but also could be used independently
+      </description>
+   </category-def>
+</site>
