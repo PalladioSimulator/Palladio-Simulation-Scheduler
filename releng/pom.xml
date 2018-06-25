@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.palladiosimulator.scheduler</groupId>
 		<artifactId>parent</artifactId>
-		<version>4.1.0-SNAPSHOT</version>
+		<version>4.1.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>releng</artifactId>
 	<packaging>pom</packaging>
