@@ -3,44 +3,44 @@
 <target name="Oxygen Modeling" sequenceNumber="4">
 	<locations>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
-			<unit id="org.eclipse.m2m.qvt.oml.sdk.feature.group" version="3.7.0.v20170604-1316"/>
-			<repository location="http://download.eclipse.org/releases/oxygen/"/>
+			<unit id="org.eclipse.m2m.qvt.oml.sdk.feature.group" version="3.9.3.v20190610-0948"/>
+			<repository location="http://download.eclipse.org/releases/2019-06/201906191000/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
 			<unit id="de.uka.ipd.sdq.probfunction.feature.feature.group" version="2.1.1.201611171324"/>
-			<repository location="https://sdqweb.ipd.kit.edu/eclipse/commons/releases/latest/"/>
+			<repository location="https://updatesite.palladio-simulator.com/palladio-core-commons/releases/latest/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
 			<unit id="de.uka.ipd.sdq.probfunction.feature.feature.group" version="2.1.1.201611171324"/>
-			<repository location="https://sdqweb.ipd.kit.edu/eclipse/commons/nightly/"/>
+			<repository location="https://updatesite.palladio-simulator.com/palladio-core-commons/nightly/"/>
 		</location>
 		
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
 			<unit id="de.uka.ipd.sdq.simulation.abstractsimengine.feature.feature.group" version="4.0.0.201806211339"/>
-			<repository location="https://sdqweb.ipd.kit.edu/eclipse/abstractsimengine/releases/latest/"/>
+			<repository location="https://updatesite.palladio-simulator.com/palladio-simulation-abstractsimengine/releases/latest/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
 			<unit id="de.uka.ipd.sdq.simulation.abstractsimengine.feature.feature.group" version="4.0.0.201806211339"/>
-			<repository location="https://sdqweb.ipd.kit.edu/eclipse/abstractsimengine/nightly/"/>
+			<repository location="https://updatesite.palladio-simulator.com/palladio-simulation-abstractsimengine/nightly/"/>
 		</location>
 		
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
 			<unit id="org.palladiosimulator.pcm.feature.feature.group" version="4.1.0.201709282114"/>
-			<repository location="https://sdqweb.ipd.kit.edu/eclipse/palladio/pcm/releases/latest/"/>
+			<repository location="https://updatesite.palladio-simulator.com/palladio-core-pcm/releases/latest/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
 			<unit id="org.palladiosimulator.pcm.feature.feature.group" version="4.1.0.201709282114"/>
-			<repository location="https://sdqweb.ipd.kit.edu/eclipse/palladio/pcm/nightly/"/>
+			<repository location="https://updatesite.palladio-simulator.com/palladio-core-pcm/nightly/"/>
 		</location>
 		
 			<locations>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
 			<unit id="org.palladiosimulator.thirdpartywrapper.feature.feature.group" version="1.0.2.201709282218"/>
-			<repository location="https://sdqweb.ipd.kit.edu/eclipse/thirdpartywrapper/releases/latest/"/>
+			<repository location="https://updatesite.palladio-simulator.com/palladio-thirdparty-wrapper/releases/latest/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
 			<unit id="org.palladiosimulator.thirdpartywrapper.feature.feature.group" version="1.0.2.201709282218"/>
-			<repository location="https://sdqweb.ipd.kit.edu/eclipse/thirdpartywrapper/nightly/"/>
+			<repository location="https://updatesite.palladio-simulator.com/palladio-thirdparty-wrapper/nightly/"/>
 		</location>
 	</locations>
 		
