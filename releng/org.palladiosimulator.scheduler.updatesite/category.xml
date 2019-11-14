@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.palladiosimulator.scheduler.feature_4.1.1.qualifier.jar" id="org.palladiosimulator.scheduler.feature" version="4.1.1.qualifier">
+   <feature url="features/org.palladiosimulator.scheduler.feature_4.2.0.qualifier.jar" id="org.palladiosimulator.scheduler.feature" version="4.2.0.qualifier">
       <category name="org.palladiosimulator.support.category"/>
    </feature>
-      <feature url="features/org.palladiosimulator.scheduler.feature.source_4.1.1.qualifier.jar" id="org.palladiosimulator.scheduler.feature.source" version="4.1.1.qualifier">
+      <feature url="features/org.palladiosimulator.scheduler.feature.source_4.2.0.qualifier.jar" id="org.palladiosimulator.scheduler.feature.source" version="4.2.0.qualifier">
       <category name="org.palladiosimulator.support.source.category"/>
    </feature>
    <category-def name="org.palladiosimulator.support.category" label="Palladio Supporting Features">
