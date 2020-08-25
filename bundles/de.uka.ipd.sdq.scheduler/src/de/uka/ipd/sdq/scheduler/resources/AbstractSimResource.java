@@ -6,10 +6,11 @@ import de.uka.ipd.sdq.scheduler.factory.SchedulingFactory;
 
 public abstract class AbstractSimResource extends SchedulerEntity {
 
-    protected long capacity;
-    private String name = "";
-    private String id = "";
-    protected SchedulingFactory factory;
+    protected final long capacity;
+    private final String name;
+    private final String id;
+    // TODO: private
+    protected final SchedulingFactory factory;
 
     public AbstractSimResource(SchedulerModel model, long capacity, String name, String id) {
         super(model, AbstractSimResource.class.getName());

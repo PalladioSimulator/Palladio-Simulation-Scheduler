@@ -14,6 +14,7 @@ import de.uka.ipd.sdq.scheduler.sensors.IActiveResourceStateSensor;
 
 public abstract class AbstractActiveResource extends AbstractSimResource implements IActiveResource {
 
+    // TODO: remove static
     private static Map<ISchedulableProcess, AbstractActiveResource> currentResourceTable = new ConcurrentHashMap<ISchedulableProcess, AbstractActiveResource>();
 
     private final List<IActiveResourceStateSensor> observers;
