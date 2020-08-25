@@ -22,7 +22,14 @@ public class SimProcessorSharingResource extends AbstractActiveResource {
     /**
      * The minimum amount of time used for scheduling an event
      */
-    static double JIFFY = 1e-9;
+    private final static double JIFFY = 1e-9;
+
+    private final ProcessingFinishedEvent processingFinished;
+    private final Hashtable<ISchedulableProcess, Double> running_processes = new Hashtable<ISchedulableProcess, Double>();
+    /** Keeps track of the current number of processes assigned to each core. */
+    private final List<Integer> numberProcessesOnCore;
+
+    private double last_time;
 
     private class ProcessingFinishedEvent extends AbstractSimEventDelegator<ISchedulableProcess> {
 
@@ -46,11 +53,6 @@ public class SimProcessorSharingResource extends AbstractActiveResource {
 
     }
 
-    private final ProcessingFinishedEvent processingFinished;
-    private final Hashtable<ISchedulableProcess, Double> running_processes = new Hashtable<ISchedulableProcess, Double>();
-    private double last_time;
-    /** Keeps track of the current number of processes assigned to each core. */
-    private final List<Integer> numberProcessesOnCore;
 
     public SimProcessorSharingResource(final SchedulerModel model, final String name, final String id, final long capacity) {
         super(model, capacity, name, id);
