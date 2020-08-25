@@ -10,17 +10,13 @@ import de.uka.ipd.sdq.simulation.abstractsimengine.AbstractSimEntityDelegator;
  */
 public class SchedulerEntity extends AbstractSimEntityDelegator {
 
-    // TODO: remove not needed with super.getModel()
-    private final SchedulerModel model;
-
     protected SchedulerEntity(SchedulerModel model, String name) {
         super(model, name);
-        this.model = model;
     }
 
     @Override
     public SchedulerModel getModel() {
-        return model;
+        return (SchedulerModel) super.getModel();
     }
 
 }
