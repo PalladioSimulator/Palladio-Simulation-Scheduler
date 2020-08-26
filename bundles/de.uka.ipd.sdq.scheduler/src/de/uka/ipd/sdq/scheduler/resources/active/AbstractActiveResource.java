@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import de.uka.ipd.sdq.scheduler.IActiveResource;
 import de.uka.ipd.sdq.scheduler.ISchedulableProcess;
@@ -14,14 +13,13 @@ import de.uka.ipd.sdq.scheduler.sensors.IActiveResourceStateSensor;
 
 public abstract class AbstractActiveResource extends AbstractSimResource implements IActiveResource {
 
-    // TODO: remove static
-    private static Map<ISchedulableProcess, AbstractActiveResource> currentResourceTable = new ConcurrentHashMap<ISchedulableProcess, AbstractActiveResource>();
-
     private final List<IActiveResourceStateSensor> observers;
+    private final IResourceTableManager resourceTableManager;
 
-    public AbstractActiveResource(SchedulerModel model, long capacity, String name, String id) {
+    public AbstractActiveResource(SchedulerModel model, long capacity, String name, String id, IResourceTableManager resourceTableManager) {
         super(model, capacity, name, id);
         observers = new ArrayList<IActiveResourceStateSensor>();
+        this.resourceTableManager = resourceTableManager;
     }
 
     protected abstract void doProcessing(ISchedulableProcess process, int resourceServiceID, double demand);
@@ -36,13 +34,13 @@ public abstract class AbstractActiveResource extends AbstractSimResource impleme
             return;
         }
 
-        AbstractActiveResource last = getLastResource(process);
+        AbstractActiveResource last = resourceTableManager.getLastResource(process);
         if (!this.equals(last)) {
             if (last != null) {
                 last.dequeue(process);
             }
             this.enqueue(process);
-            setLastResource(process, this);
+            resourceTableManager.setLastResource(process, this);
         }
         if (parameterMap != null && parameterMap.isEmpty()) {
             doProcessing(process, resourceServiceID, demand);
@@ -58,42 +56,9 @@ public abstract class AbstractActiveResource extends AbstractSimResource impleme
                 "doProcessing has to be overwritten to allow additional Parameters for active Resources");
     }
 
-
-    private static AbstractActiveResource getLastResource(ISchedulableProcess process) {
-        return currentResourceTable.get(process);
-    }
-
-    private static void setLastResource(ISchedulableProcess process, AbstractActiveResource resource) {
-        if (!currentResourceTable.containsKey(process)) {
-            process.addTerminatedObserver(resource);
-        }
-        currentResourceTable.put(process, resource);
-    }
-
-    public static void cleanProcesses() {
-        // Activate all waiting processes to yield process completion
-        // Synchronization with process() avoids that processes are added after
-        // the activation.
-        for (ISchedulableProcess process : currentResourceTable.keySet()) {
-            if (!process.isFinished()) {
-                // TODO: to avoid exceptions at the end of the simulation,
-                // these are being caught here. Maybe something can be fixed
-                // in the simulation so that the exception does not occur here.
-                try {
-                    process.activate();
-                } catch (IllegalStateException e) {
-
-                }
-            }
-        }
-
-        // assert that all threads have been terminated.
-        assert currentResourceTable.size() == 0;
-    }
-
     @Override
     public void notifyTerminated(ISchedulableProcess simProcess) {
-        currentResourceTable.remove(simProcess);
+        resourceTableManager.notifyTerminated(simProcess);
     }
 
     @Override

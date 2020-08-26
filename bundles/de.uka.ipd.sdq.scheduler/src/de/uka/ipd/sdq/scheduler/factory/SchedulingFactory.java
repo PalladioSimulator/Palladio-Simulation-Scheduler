@@ -14,6 +14,7 @@ import de.uka.ipd.sdq.scheduler.IActiveResource;
 import de.uka.ipd.sdq.scheduler.IPassiveResource;
 import de.uka.ipd.sdq.scheduler.ISchedulingFactory;
 import de.uka.ipd.sdq.scheduler.SchedulerModel;
+import de.uka.ipd.sdq.scheduler.resources.active.ResourceTableManager;
 import de.uka.ipd.sdq.scheduler.resources.active.SimDelayResource;
 import de.uka.ipd.sdq.scheduler.resources.active.SimFCFSResource;
 import de.uka.ipd.sdq.scheduler.resources.active.SimProcessorSharingResource;
@@ -32,11 +33,17 @@ public class SchedulingFactory implements ISchedulingFactory {
     private final Map<String, IPassiveResource> passive_resource_map = new Hashtable<String, IPassiveResource>();
     // private Map<String, IScheduler> scheduler_map = new Hashtable<String, IScheduler>();
     // private Map<String, ActiveProcess> process_map = new Hashtable<String, ActiveProcess>();
+    private final ResourceTableManager resourceTableManager;
 
     private final SchedulerModel model;
 
     public SchedulingFactory(SchedulerModel model) {
         this.model = model;
+        resourceTableManager = new ResourceTableManager();
+    }
+    
+    public void cleanActiveResources() {
+        resourceTableManager.cleanProcesses();
     }
 
     @Override
@@ -54,7 +61,7 @@ public class SchedulingFactory implements ISchedulingFactory {
     @Override
     public IActiveResource createSimFCFSResource(String resourceName, String resourceId) {
         IActiveResource resource = active_resource_map.get(resourceId);
-        resource = new SimFCFSResource(model, resourceName, resourceId, 1l);
+        resource = new SimFCFSResource(model, resourceName, resourceId, 1l, resourceTableManager);
         active_resource_map.put(resourceId, resource);
         return resource;
     }
@@ -62,7 +69,7 @@ public class SchedulingFactory implements ISchedulingFactory {
     @Override
     public IActiveResource createSimDelayResource(String resourceName, String resourceId) {
         IActiveResource resource = active_resource_map.get(resourceId);
-        resource = new SimDelayResource(model, resourceName, resourceId);
+        resource = new SimDelayResource(model, resourceName, resourceId, resourceTableManager);
         active_resource_map.put(resourceId, resource);
         return resource;
     }
@@ -78,7 +85,7 @@ public class SchedulingFactory implements ISchedulingFactory {
     @Override
     public IActiveResource createSimProcessorSharingResource(String resourceName, String resourceId, long numberOfCores) {
         IActiveResource resource = active_resource_map.get(resourceId);
-        resource = new SimProcessorSharingResource(model, resourceName, resourceId, numberOfCores);
+        resource = new SimProcessorSharingResource(model, resourceName, resourceId, numberOfCores, resourceTableManager);
         active_resource_map.put(resourceId, resource);
         return resource;
     }
@@ -87,7 +94,7 @@ public class SchedulingFactory implements ISchedulingFactory {
     public IActiveResource createSimProcessorSharingResourceWindows(String resourceName, String resourceId,
             long numberOfCores) {
         IActiveResource resource = active_resource_map.get(resourceId);
-        resource = new SimProcessorSharingResourceWindows(model, resourceName, resourceId, numberOfCores);
+        resource = new SimProcessorSharingResourceWindows(model, resourceName, resourceId, numberOfCores, resourceTableManager);
         active_resource_map.put(resourceId, resource);
         return resource;
     }
@@ -96,7 +103,7 @@ public class SchedulingFactory implements ISchedulingFactory {
     public IActiveResource createSimProcessorSharingResourceLinuxO1(String resourceName, String resourceId,
             long numberOfCores) {
         IActiveResource resource = active_resource_map.get(resourceId);
-        resource = new SimProcessorSharingResourceLinuxO1(model, resourceName, resourceId, numberOfCores);
+        resource = new SimProcessorSharingResourceLinuxO1(model, resourceName, resourceId, numberOfCores, resourceTableManager);
         active_resource_map.put(resourceId, resource);
         return resource;
     }

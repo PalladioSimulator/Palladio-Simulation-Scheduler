@@ -54,8 +54,8 @@ public class SimProcessorSharingResource extends AbstractActiveResource {
     }
 
 
-    public SimProcessorSharingResource(final SchedulerModel model, final String name, final String id, final long capacity) {
-        super(model, capacity, name, id);
+    public SimProcessorSharingResource(final SchedulerModel model, final String name, final String id, final long capacity, IResourceTableManager resourceTableManager) {
+        super(model, capacity, name, id, resourceTableManager);
         this.processingFinished = new ProcessingFinishedEvent(model);
         this.numberProcessesOnCore = new ArrayList<Integer>((int) getCapacity());
         for (int i = 0; i < getCapacity(); i++) {

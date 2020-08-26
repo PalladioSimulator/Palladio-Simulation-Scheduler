@@ -42,8 +42,8 @@ public class SimFCFSResource extends AbstractActiveResource {
     private final Hashtable<ISchedulableProcess, Double> running_processes = new Hashtable<ISchedulableProcess, Double>();
     private double last_time;
 
-    public SimFCFSResource(final SchedulerModel model, final String name, final String id, final long capacity) {
-        super(model, capacity, name, id);
+    public SimFCFSResource(final SchedulerModel model, final String name, final String id, final long capacity, IResourceTableManager resourceTableManager) {
+        super(model, capacity, name, id, resourceTableManager);
         processingFinished = new ProcessingFinishedEvent(model);
     }
 
