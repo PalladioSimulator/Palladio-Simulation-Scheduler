@@ -24,6 +24,10 @@ public abstract class AbstractActiveResource extends AbstractSimResource impleme
         observers = new ArrayList<IActiveResourceStateSensor>();
     }
 
+    protected abstract void doProcessing(ISchedulableProcess process, int resourceServiceID, double demand);
+    protected abstract void enqueue(ISchedulableProcess process);
+    protected abstract void dequeue(ISchedulableProcess process);
+
     @Override
     public final void process(ISchedulableProcess process, int resourceServiceID,
             Map<String, Serializable> parameterMap, double demand) {
@@ -47,7 +51,6 @@ public abstract class AbstractActiveResource extends AbstractSimResource impleme
         }
     }
 
-    protected abstract void doProcessing(ISchedulableProcess process, int resourceServiceID, double demand);
 
     protected void doProcessing(ISchedulableProcess process, int resourceServiceID,
             Map<String, Serializable> parameterMap, double demand) {
@@ -55,9 +58,6 @@ public abstract class AbstractActiveResource extends AbstractSimResource impleme
                 "doProcessing has to be overwritten to allow additional Parameters for active Resources");
     }
 
-    protected abstract void enqueue(ISchedulableProcess process);
-
-    protected abstract void dequeue(ISchedulableProcess process);
 
     private static AbstractActiveResource getLastResource(ISchedulableProcess process) {
         return currentResourceTable.get(process);
