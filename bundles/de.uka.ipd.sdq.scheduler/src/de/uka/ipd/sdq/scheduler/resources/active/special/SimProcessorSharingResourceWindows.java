@@ -14,6 +14,7 @@ import de.uka.ipd.sdq.scheduler.LoggingWrapper;
 import de.uka.ipd.sdq.scheduler.SchedulerModel;
 import de.uka.ipd.sdq.scheduler.entities.SchedulerEntity;
 import de.uka.ipd.sdq.scheduler.resources.active.AbstractActiveResource;
+import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 import de.uka.ipd.sdq.simulation.abstractsimengine.AbstractSimEventDelegator;
 import de.uka.ipd.sdq.simulation.abstractsimengine.IEntity;
 import de.uka.ipd.sdq.simulation.abstractsimengine.NullEntity;
@@ -115,8 +116,8 @@ public class SimProcessorSharingResourceWindows extends AbstractActiveResource {
     private int coreToUseForInitialLoadBalancing = 0;
 
     public SimProcessorSharingResourceWindows(final SchedulerModel model, final String name, final String id,
-            final long numberOfCores) {
-        super(model, numberOfCores, name, id);
+            final long numberOfCores, IResourceTableManager resourceTableManager) {
+        super(model, numberOfCores, name, id, resourceTableManager);
         for (int j = 0; j < numberOfCores; j++) {
             running_processesPerCore.add(new Hashtable<ISchedulableProcess, Double>());
         }

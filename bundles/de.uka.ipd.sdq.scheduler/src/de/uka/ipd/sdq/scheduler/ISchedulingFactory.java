@@ -30,6 +30,8 @@ public interface ISchedulingFactory {
     // public abstract IRunningProcess createRunningProcess(ISchedulableProcess process,
     // ProcessConfiguration process_configuration, ActiveResourceConfiguration
     // resource_configuration);
+    
+    void cleanActiveResources();
 
     public abstract void resetFactory();
 }

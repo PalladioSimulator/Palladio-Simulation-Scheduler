@@ -13,8 +13,8 @@ public class SimDelayResource extends AbstractActiveResource {
     // Contains all running processes on the resource (key: process ID)
     private final Hashtable<String, ISchedulableProcess> running_processes = new Hashtable<String, ISchedulableProcess>();
 
-    public SimDelayResource(final SchedulerModel model, final String name, final String id) {
-        super(model, -1l, name, id);
+    public SimDelayResource(final SchedulerModel model, final String name, final String id, IResourceTableManager resourceTableManager) {
+        super(model, -1l, name, id, resourceTableManager);
     }
 
     @Override
