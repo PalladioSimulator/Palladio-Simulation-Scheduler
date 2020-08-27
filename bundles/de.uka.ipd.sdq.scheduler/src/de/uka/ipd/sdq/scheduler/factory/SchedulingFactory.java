@@ -14,7 +14,7 @@ import de.uka.ipd.sdq.scheduler.IActiveResource;
 import de.uka.ipd.sdq.scheduler.IPassiveResource;
 import de.uka.ipd.sdq.scheduler.ISchedulingFactory;
 import de.uka.ipd.sdq.scheduler.SchedulerModel;
-import de.uka.ipd.sdq.scheduler.resources.active.ResourceTableManager;
+import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 import de.uka.ipd.sdq.scheduler.resources.active.SimDelayResource;
 import de.uka.ipd.sdq.scheduler.resources.active.SimFCFSResource;
 import de.uka.ipd.sdq.scheduler.resources.active.SimProcessorSharingResource;
@@ -33,13 +33,13 @@ public class SchedulingFactory implements ISchedulingFactory {
     private final Map<String, IPassiveResource> passive_resource_map = new Hashtable<String, IPassiveResource>();
     // private Map<String, IScheduler> scheduler_map = new Hashtable<String, IScheduler>();
     // private Map<String, ActiveProcess> process_map = new Hashtable<String, ActiveProcess>();
-    private final ResourceTableManager resourceTableManager;
+    private final IResourceTableManager resourceTableManager;
 
     private final SchedulerModel model;
 
-    public SchedulingFactory(SchedulerModel model) {
+    public SchedulingFactory(SchedulerModel model, IResourceTableManager resourceTableManager) {
         this.model = model;
-        resourceTableManager = new ResourceTableManager();
+        this.resourceTableManager = resourceTableManager;
     }
     
     public void cleanActiveResources() {
@@ -52,7 +52,7 @@ public class SchedulingFactory implements ISchedulingFactory {
         if (resource == null) {
             SchedulerExtensionFactory factory = getSchedulerExtensionFactory(extensionId);
             assert factory != null;
-            resource = factory.getExtensionScheduler(model, extensionId, resourceId, numberOfCores);
+            resource = factory.getExtensionScheduler(model, extensionId, resourceId, numberOfCores, resourceTableManager);
             active_resource_map.put(resourceId, resource);
         }
         return resource;

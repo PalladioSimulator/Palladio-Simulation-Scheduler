@@ -2,6 +2,7 @@ package de.uka.ipd.sdq.scheduler.factory;
 
 import de.uka.ipd.sdq.scheduler.IActiveResource;
 import de.uka.ipd.sdq.scheduler.SchedulerModel;
+import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 
 public interface SchedulerExtensionFactory {
 
@@ -22,6 +23,6 @@ public interface SchedulerExtensionFactory {
      * @return the resource with the corresponding scheduler for the simulation
      */
     public IActiveResource getExtensionScheduler(SchedulerModel model, String resourceName, String resourceId,
-            long numberOfCores);
+            long numberOfCores, IResourceTableManager resourceTableManager);
 
 }
