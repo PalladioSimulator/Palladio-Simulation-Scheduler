@@ -12,7 +12,7 @@
 	<packaging>pom</packaging>
 	
 	<modules>
-		
+		<module>de.uka.ipd.sdq.scheduler.tests</module>		
 	</modules>
 	
 </project>
