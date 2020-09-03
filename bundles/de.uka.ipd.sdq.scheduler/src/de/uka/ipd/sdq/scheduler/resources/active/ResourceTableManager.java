@@ -26,7 +26,7 @@ public class ResourceTableManager implements IResourceTableManager {
     }
     
     @Override
-    public void cleanProcesses() {
+    public void waitForProcesses() {
         // Activate all waiting processes to yield process completion
         // Synchronization with process() avoids that processes are added after
         // the activation.

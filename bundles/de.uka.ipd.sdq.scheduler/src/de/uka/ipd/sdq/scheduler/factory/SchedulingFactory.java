@@ -43,7 +43,7 @@ public class SchedulingFactory implements ISchedulingFactory {
     }
     
     public void cleanActiveResources() {
-        resourceTableManager.cleanProcesses();
+        resourceTableManager.waitForProcesses();
     }
 
     @Override
