@@ -9,5 +9,5 @@ public interface IResourceTableManager {
     
     void notifyTerminated(ISchedulableProcess simProcess);
     
-    void cleanProcesses();
+    void waitForProcesses();
 }
