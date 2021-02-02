@@ -4,7 +4,7 @@
 	<locations>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
 			<unit id="org.eclipse.m2m.qvt.oml.sdk.feature.group" version="3.10.2.v20200609-1812"/>
-			<repository location="http://download.eclipse.org/releases/2020-06/202006171000/"/>
+			<repository location="http://download.eclipse.org/releases/2020-12/202012161000/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
 			<unit id="de.uka.ipd.sdq.probfunction.feature.feature.group" version="2.1.1.201611171324"/>
