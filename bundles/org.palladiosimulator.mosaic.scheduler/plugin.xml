@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.palladiosimulator.mosaic.scheduler.virtual"
+         name="Virtual Container Scheduler"
+         point="de.uka.ipd.sdq.scheduler">
+      <scheduler
+            class="org.palladiosimulator.mosaic.scheduler.VirtualSchedulerExtensionFactory">
+      </scheduler>
+   </extension>
+   <extension
+         id="org.palladiosimulator.mosaic.scheduler.cgroup"
+         name="CGroup Container Scheduler"
+         point="de.uka.ipd.sdq.scheduler">
+      <scheduler
+            class="org.palladiosimulator.mosaic.scheduler.CGroupSchedulerExtensionFactory">
+      </scheduler>
+   </extension>
+   
+    <extension
+         point="org.eclipse.emf.ecore.uri_mapping">
+      <mapping
+            source="pathmap://MOSAIC_SCHEDULER_MODELS/"
+            target="platform:/plugin/org.palladiosimulator.mosaic.scheduler/models/">
+      </mapping>
+   </extension>
+
+</plugin>
