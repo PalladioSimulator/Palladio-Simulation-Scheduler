@@ -2,7 +2,7 @@
 <feature
       id="org.palladiosimulator.scheduler.feature"
       label="Scheduler Implementation for Palladio Simulator"
-      version="5.0.0.qualifier"
+      version="5.1.0.qualifier"
       plugin="org.palladiosimulator.branding"
       license-feature="org.palladiosimulator.license"
       license-feature-version="1.0.0">
