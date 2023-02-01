@@ -4,6 +4,6 @@ Bundle-SymbolicName: de.uka.ipd.sdq.scheduler.tests
 Bundle-Version: 5.1.0.qualifier
 Fragment-Host: de.uka.ipd.sdq.scheduler;bundle-version="4.2.0"
 Automatic-Module-Name: de.uka.ipd.sdq.scheduler.tests
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.junit;bundle-version="4.13.0",
  org.mockito.mockito-merged;bundle-version="3.3.3"
