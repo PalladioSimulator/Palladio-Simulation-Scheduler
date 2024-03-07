@@ -183,9 +183,11 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
 		String groupId = (String) parameterMap.get("__MOSAIC_CONTAINER_ID");
 		if (group == null)// TODO this does not work as it is the wrong id
 			groupId = this.getId();
-
+		
+		Double containerDemand = (Double) parameterMap.get("__MOSAIC_CONTAINER_DEMAND");
+		
 		// schedule demand
-		scheduler.enqueueProcessDemand(groupId, process, demand);
+		scheduler.enqueueProcessDemand(groupId, process, containerDemand);
 
 		scheduleNextEvent();
 		process.passivate();

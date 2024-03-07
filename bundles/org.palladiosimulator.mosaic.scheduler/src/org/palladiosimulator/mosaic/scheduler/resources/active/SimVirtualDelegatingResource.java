@@ -48,8 +48,12 @@ public class SimVirtualDelegatingResource extends AbstractActiveResource {
 //        fireDemandCompleted(process);
 //        process.activate();
     }
+    
+    
 
-    @Override
+
+
+	@Override
     protected void doProcessing(final ISchedulableProcess process, final int resourceServiceId, final double demand) {
         LoggingWrapper.log("Delay: " + process + " demands " + demand);
         if (!running_processes.containsKey(process.getId())) {
@@ -107,6 +111,7 @@ public class SimVirtualDelegatingResource extends AbstractActiveResource {
         
 		Map<String, Serializable> params = new HashMap<>();
 		params.put("__MOSAIC_CONTAINER_ID", container.getResourceContainerID());
+		params.put("__MOSAIC_CONTAINER_DEMAND", demand);
 		//parentResourceContainer.loadActiveResource(simucomProcess, typeId, demand);
 		parentResourceContainer.loadActiveResource(simucomProcess, CPU_INTERFACE_ID, 0, params , demand);
         
