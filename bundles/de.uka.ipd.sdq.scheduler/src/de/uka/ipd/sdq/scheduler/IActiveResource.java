@@ -56,6 +56,11 @@ public interface IActiveResource {
     public abstract void registerProcess(ISchedulableProcess runningProcess);
 
     public abstract void notifyTerminated(ISchedulableProcess simProcess);
+    
+    default public  void notifyResourceChanged() {
+    	
+    }
+
 
     /**
      * Get the number of processes currently having requests issued to this resource and waiting for

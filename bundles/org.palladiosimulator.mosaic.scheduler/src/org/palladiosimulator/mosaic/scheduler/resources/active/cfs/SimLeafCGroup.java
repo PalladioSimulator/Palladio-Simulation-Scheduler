@@ -12,18 +12,20 @@ import java.util.OptionalDouble;
 import de.uka.ipd.sdq.scheduler.ISchedulableProcess;
 import de.uka.ipd.sdq.simucomframework.Context;
 
-public class SimCGroup {
+public class SimLeafCGroup implements ISimCGroup {
 	
 	private final TaskObserver callback;
-	private Double processingRate;
-	private double quota_period;
-	private double quota_cores;
+	private Double processingRate = 1.0;
+	//defined in microseconds
+	private long quota_period = 1000000;//µs
+	//defined as portion of cores
+	private double quota_cores = 1.0;
 	
 	public List<ISchedulableProcess> processes = new LinkedList<>();
 	public Map<ISchedulableProcess, Double> scheduledDemands = new HashMap<>();
 	
 	
-	public SimCGroup(TaskObserver callback) {
+	public SimLeafCGroup(TaskObserver callback) {
 		this.callback = callback;
 	}
 	
@@ -33,9 +35,19 @@ public class SimCGroup {
 	}
 	
 	
-	public double grantDemand(double grantedDemand) {
+	public double grantDemand(double grantedDemand, long timePassed) {
+		var periods = timePassed / quota_period;
+		
+		var allowance = (quota_cores * quota_period * periods) / 1000;
+		var overQuota = 0.0;
+		if (grantedDemand > allowance) {
+			grantedDemand = allowance;
+			overQuota = grantedDemand - allowance;
+		}
 		
 		while(grantedDemand > 0.0 && scheduledDemands.size() > 0) {
+			
+			
 			double fairShare = grantedDemand / processes.size();
 			double unusedDemand = 0.0;
 			for(var p : scheduledDemands.keySet())
@@ -61,17 +73,20 @@ public class SimCGroup {
 		}
 		
 		
-		return grantedDemand;
+		return grantedDemand + overQuota;
 	}
 	
 	public OptionalDouble getMinDemand() {
-		return scheduledDemands.entrySet().stream().mapToDouble(e -> e.getValue()).min();
+		var min = scheduledDemands.entrySet().stream().mapToDouble(e -> e.getValue()).min();
+		return min;
 	}
 	
 	
 	public double addTask(ISchedulableProcess process, double demand) {
 		
 		this.processes.add(process);
+		
+
 		this.scheduledDemands.put(process, demand * this.getRate());
 		
 		return getRemainingDemand();
@@ -93,12 +108,12 @@ public class SimCGroup {
 	}
 
 
-	public double getQuota_period() {
+	public long getQuota_period() {
 		return quota_period;
 	}
 
 
-	public void setQuota_period(double quota_period) {
+	public void setQuota_period(long quota_period) {
 		this.quota_period = quota_period;
 	}
 
@@ -112,6 +127,7 @@ public class SimCGroup {
 		this.quota_cores = quota_cores;
 	}
 
+	
 
 
 }

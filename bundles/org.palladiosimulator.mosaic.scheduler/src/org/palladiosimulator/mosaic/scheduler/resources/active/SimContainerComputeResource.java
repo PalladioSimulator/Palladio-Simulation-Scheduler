@@ -2,11 +2,14 @@ package org.palladiosimulator.mosaic.scheduler.resources.active;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.palladiosimulator.mosaic.scheduler.resources.TaskObserver;
-import org.palladiosimulator.mosaic.scheduler.resources.active.cfs.SimCGroup;
+import org.palladiosimulator.mosaic.scheduler.resources.active.cfs.SimLeafCGroup;
+import org.palladiosimulator.mosaic.scheduler.resources.active.cfs.ISimCGroup;
 import org.palladiosimulator.mosaic.scheduler.resources.active.cfs.SimFairGroupScheduler;
+import org.palladiosimulator.mosaic.scheduler.resources.active.cfs.SimInnerCGroup;
 
 import de.uka.ipd.sdq.scheduler.ISchedulableProcess;
 import de.uka.ipd.sdq.scheduler.LoggingWrapper;
@@ -16,6 +19,7 @@ import de.uka.ipd.sdq.scheduler.resources.active.AbstractActiveResource;
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 import de.uka.ipd.sdq.simucomframework.model.SimuComModel;
 import de.uka.ipd.sdq.simucomframework.resources.ScheduledResource;
+import de.uka.ipd.sdq.simucomframework.resources.SimulatedResourceContainer;
 import de.uka.ipd.sdq.simulation.abstractsimengine.AbstractSimEventDelegator;
 
 public class SimContainerComputeResource extends AbstractActiveResource implements TaskObserver
@@ -24,7 +28,7 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
 	
 	
 	private SimFairGroupScheduler scheduler;
-	private SimCGroup rootGroup;
+	private SimLeafCGroup rootGroup;
 	final static int QUOTA_PERIOD_MSEC = 100;
     protected static final String CPU_RESOUREC_TYPE_ID = "_oro4gG3fEdy4YaaT-RYrLQ";
 
@@ -88,17 +92,48 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
         	scheduler.setProcessingRate(Double.parseDouble(rate)*scheduledResource.getNumberOfInstances());
         	
         	
-        	container.getNestedResourceContainers().forEach(nested -> {
-        		SimCGroup group = new SimCGroup(this);
-        		var nestedCPUResource = nested.getActiveResources().stream().filter(nestedResource -> nestedResource.getResourceTypeId().equals(CPU_RESOUREC_TYPE_ID)).map(ScheduledResource.class::cast).findFirst();
-        		nestedCPUResource.ifPresent(nestedScheduledResource -> {
-	        		var nestedActiveResource = nestedScheduledResource.getActiveResource();
-					var nestedRate = nestedActiveResource.getProcessingRate_ProcessingResourceSpecification().getSpecification();
-	   		
-	        		group.setRate(nestedRate);
-	        		scheduler.addGroup(group, nested.getResourceContainerID());
-        		});
-        		
+        	var nestedGroups = createOrUpdateNestedCGroup(container);
+        	nestedGroups.forEach((nestedId, group) -> {
+        		scheduler.addGroup(group, nestedId, true);
+        	});
+        });
+        
+	}
+	
+	
+	
+	
+	@Override
+	public void notifyResourceChanged() {
+		updateScheduler();
+	}
+
+
+
+	public void updateScheduler() {
+		
+		// find child containers
+        var simuComModel = (SimuComModel)this.getModel();
+        
+        
+        var simContainer = simuComModel.getResourceRegistry().getSimulatedResourceContainers().stream()
+        	.filter(c -> c.getActiveResources().stream()
+        			.anyMatch(r -> r.getUnderlyingResource() ==  this))
+        	.findFirst();
+		
+        simContainer.ifPresent(container -> {
+        	var activeResource = container.getActiveResources().stream().filter(r -> r.getUnderlyingResource() == this).findFirst();
+        	var scheduledResource = (ScheduledResource) activeResource.get();
+        	var rate = scheduledResource.getActiveResource().getProcessingRate_ProcessingResourceSpecification().getSpecification();
+        	//Update ProcessingRate
+        	//TODO: Evaluate static...
+        	scheduler.setProcessingRate(Double.parseDouble(rate)*scheduledResource.getNumberOfInstances());
+        	
+        	
+        	var nestedGroups = createOrUpdateNestedCGroup(container);
+        	nestedGroups.forEach((nestedId, group) -> {
+        		if(!scheduler.hasGroup(nestedId))
+        			scheduler.addGroup(group, nestedId, true);
         	});
         });
         
@@ -106,13 +141,53 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
 
 
 
+	public Map<String, ISimCGroup> createOrUpdateNestedCGroup(SimulatedResourceContainer container) {
+		var retMap = new HashMap<String, ISimCGroup>();
+		container.getNestedResourceContainers().forEach(nested -> {
+			ISimCGroup group;
+			if (scheduler.hasGroup(nested.getResourceContainerID())) {
+				//Lookup existing groups from scheduler
+				group = scheduler.getGroup(nested.getResourceContainerID());
+			} else if(nested.getNestedResourceContainers().isEmpty()) {
+				group = new SimLeafCGroup(this);
+			} else {
+				group = new SimInnerCGroup(null);
+			}
+			
+			
+			if(group instanceof SimInnerCGroup) {
+				var subGroups = createOrUpdateNestedCGroup(nested);
+				subGroups.forEach((nestedId, sgroup) -> {
+	        		scheduler.addGroup(sgroup, nestedId, false);
+	        		((SimInnerCGroup) group).addSubGroup(sgroup);
+	        	});
+			}
+			
+			
+			// Update rate anyhow
+			var nestedCPUResource = nested.getActiveResources().stream().filter(nestedResource -> nestedResource.getResourceTypeId().equals(CPU_RESOUREC_TYPE_ID)).map(ScheduledResource.class::cast).findFirst();
+			nestedCPUResource.ifPresent(nestedScheduledResource -> {
+				var nestedActiveResource = nestedScheduledResource.getActiveResource();
+				var nestedRate = nestedActiveResource.getProcessingRate_ProcessingResourceSpecification().getSpecification();
+		
+				group.setRate(nestedRate);
+				retMap.put(nested.getResourceContainerID(), group);
+	
+			});
+			
+		});
+		return retMap;
+	}
+
+
+
 
 	private void toNow() {
 		final double now = this.getModel().getSimulationControl().getCurrentSimulationTime();
-		double passed_time = now - last_time;
+		Double passed_time = now - last_time;
 		double processedDemand = passed_time * scheduler.getProcessingRate();
 		
-		scheduler.grantDemand(processedDemand);
+		scheduler.grantDemand(processedDemand, passed_time.longValue() * 1000);
 		
 
 		last_time = now;
@@ -143,9 +218,9 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
 	public void start() {
 		initScheduler();
 
-		rootGroup = new SimCGroup(this);
+		rootGroup = new SimLeafCGroup(this);
 		rootGroup.setRate("100");
-		scheduler.addGroup(rootGroup, this.getId());
+		scheduler.addGroup(rootGroup, this.getId(), true);
 		
 	}
 
@@ -181,7 +256,7 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
 		var group = rootGroup;
 
 		String groupId = (String) parameterMap.get("__MOSAIC_CONTAINER_ID");
-		if (group == null)// TODO this does not work as it is the wrong id
+		if (groupId == null)// TODO this does not work as it is the wrong id
 			groupId = this.getId();
 		
 		Double containerDemand = (Double) parameterMap.get("__MOSAIC_CONTAINER_DEMAND");

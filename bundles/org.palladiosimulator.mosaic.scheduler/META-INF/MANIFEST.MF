@@ -4,7 +4,7 @@ Bundle-Name: Mosaic Container Scheduler
 Bundle-SymbolicName: org.palladiosimulator.mosaic.scheduler;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.mosaic.scheduler
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: de.uka.ipd.sdq.scheduler;bundle-version="5.0.0",
  de.uka.ipd.sdq.simucomframework;bundle-version="5.0.0",
  de.uka.ipd.sdq.simulation.abstractsimengine;bundle-version="5.0.0",

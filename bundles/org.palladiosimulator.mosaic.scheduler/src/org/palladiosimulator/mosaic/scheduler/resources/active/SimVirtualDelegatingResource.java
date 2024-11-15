@@ -54,6 +54,59 @@ public class SimVirtualDelegatingResource extends AbstractActiveResource {
 
 
 	@Override
+	protected void doProcessing(ISchedulableProcess process, int resourceServiceID,
+			Map<String, Serializable> params, double demand) {
+		
+		
+		// Find parent Resource
+        var simuComModel = (SimuComModel)this.getModel();
+        
+        var simContainer = simuComModel.getResourceRegistry().getSimulatedResourceContainers().stream()
+        	.filter(c -> c.getActiveResources().stream()
+        			.anyMatch(r -> r.getUnderlyingResource() ==  this))
+        	.findFirst();
+        
+        if(simContainer.isEmpty())
+        	return;
+        
+        var container = simContainer.get();
+        
+        var simActiveResource = container.getActiveResources().stream().filter(r -> r.getUnderlyingResource() == this).findFirst();
+        
+        var simucomProcess = (SimuComSimProcess)process;
+        
+        //Consume demand on parent
+        // Variant 1
+        
+        String typeId = simActiveResource.get().getResourceTypeId();
+        SimulatedResourceContainer parentResourceContainer = container.getParentResourceContainer();
+        var parentResource = parentResourceContainer.getAllActiveResources().get(typeId);
+        
+        parentResource.addDemandListener(new IDemandListener() {
+
+			@Override
+			public void demand(double demand) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void demandCompleted(ISchedulableProcess simProcess) {
+				if(running_processes.containsKey(simProcess.getId())) {
+					running_processes.remove(simProcess.getId());
+					fireStateChange(running_processes.size(), 0);
+				}
+			}
+        	
+        });
+        
+
+		parentResourceContainer.loadActiveResource(simucomProcess, CPU_INTERFACE_ID, 0, params , demand);
+	}
+
+
+
+	@Override
     protected void doProcessing(final ISchedulableProcess process, final int resourceServiceId, final double demand) {
         LoggingWrapper.log("Delay: " + process + " demands " + demand);
         if (!running_processes.containsKey(process.getId())) {
@@ -81,7 +134,10 @@ public class SimVirtualDelegatingResource extends AbstractActiveResource {
         
         var simucomProcess = (SimuComSimProcess)process;
         
-        
+        //Setup Magic Strings for the scheduler
+        Map<String, Serializable> params = new HashMap<>();
+		params.put("__MOSAIC_CONTAINER_ID", container.getResourceContainerID());
+		params.put("__MOSAIC_CONTAINER_DEMAND", demand);
 
         //Consume demand on parent
         // Variant 1
@@ -109,9 +165,7 @@ public class SimVirtualDelegatingResource extends AbstractActiveResource {
         });
         
         
-		Map<String, Serializable> params = new HashMap<>();
-		params.put("__MOSAIC_CONTAINER_ID", container.getResourceContainerID());
-		params.put("__MOSAIC_CONTAINER_DEMAND", demand);
+		
 		//parentResourceContainer.loadActiveResource(simucomProcess, typeId, demand);
 		parentResourceContainer.loadActiveResource(simucomProcess, CPU_INTERFACE_ID, 0, params , demand);
         
