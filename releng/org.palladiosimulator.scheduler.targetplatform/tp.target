@@ -29,7 +29,7 @@
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
 			<unit id="org.palladiosimulator.pcm.feature.feature.group" version="4.1.0.201709282114"/>
-			<repository location="https://updatesite.palladio-simulator.com/palladio-core-pcm/branches/no_ui-workflow"/>
+			<repository location="https://updatesite.palladio-simulator.com/palladio-core-pcm/branches/no_ui-workflow_edp2"/>
 		</location>
 		
 			<locations>
