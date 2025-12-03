@@ -8,7 +8,7 @@ import java.util.OptionalDouble;
 
 import org.palladiosimulator.mosaic.scheduler.resources.TaskObserver;
 
-import de.uka.ipd.sdq.simucomframework.Context;
+import de.uka.ipd.sdq.simucomframework.core.Context;
 
 public class SimInnerCGroup implements ISimCGroup {
 	
