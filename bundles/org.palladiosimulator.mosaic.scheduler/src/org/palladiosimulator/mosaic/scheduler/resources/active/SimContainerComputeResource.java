@@ -17,9 +17,9 @@ import de.uka.ipd.sdq.scheduler.SchedulerModel;
 import de.uka.ipd.sdq.scheduler.entities.SchedulerEntity;
 import de.uka.ipd.sdq.scheduler.resources.active.AbstractActiveResource;
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
-import de.uka.ipd.sdq.simucomframework.model.SimuComModel;
-import de.uka.ipd.sdq.simucomframework.resources.ScheduledResource;
-import de.uka.ipd.sdq.simucomframework.resources.SimulatedResourceContainer;
+import de.uka.ipd.sdq.simucomframework.core.model.SimuComModel;
+import de.uka.ipd.sdq.simucomframework.core.resources.ScheduledResource;
+import de.uka.ipd.sdq.simucomframework.core.resources.SimulatedResourceContainer;
 import de.uka.ipd.sdq.simulation.abstractsimengine.AbstractSimEventDelegator;
 
 public class SimContainerComputeResource extends AbstractActiveResource implements TaskObserver

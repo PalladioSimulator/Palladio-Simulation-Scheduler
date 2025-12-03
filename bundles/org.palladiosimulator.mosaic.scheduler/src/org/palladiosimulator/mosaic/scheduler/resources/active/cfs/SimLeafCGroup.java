@@ -10,7 +10,7 @@ import org.palladiosimulator.mosaic.scheduler.resources.TaskObserver;
 import java.util.OptionalDouble;
 
 import de.uka.ipd.sdq.scheduler.ISchedulableProcess;
-import de.uka.ipd.sdq.simucomframework.Context;
+import de.uka.ipd.sdq.simucomframework.core.Context;
 
 public class SimLeafCGroup implements ISimCGroup {
 	
