@@ -17,6 +17,7 @@ public class SimFairGroupScheduler {
 	
 	// the processingRate for the group scheduler is assumed to be noOfCores * processingRateOfCore
 	private double processingRate = 1.0;
+	private int noCores = 1;
 	
 
 	/**
@@ -61,13 +62,13 @@ public class SimFairGroupScheduler {
 		if(minFinishTime.isEmpty() || minFinishTime.getAsDouble() <= 0.0)
 			return -1.0;
 		
-		return Math.max( minFinishTime.getAsDouble() / processingRate, JIFFY);
+		return Math.max( minFinishTime.getAsDouble() / (processingRate * noCores), JIFFY);
 	}
 	
 	
-	public void grantDemand(double grantedDemand, long timePassed) {
+	public void grantDemand(double grantedDemand, long timePassed, double maxRatePerCore) {
 		
-		var unconsumedDemands = splitDemandsPerRequest(grantedDemand, requestedRates, timePassed);
+		var unconsumedDemands = splitDemandsPerRequest(grantedDemand, requestedRates, timePassed, maxRatePerCore);
 		//should not happen under normal circumstances as it indicates that we have granted to much demand to groups
 		if(unconsumedDemands > 0 && getNextSchedule() > JIFFY)
 			System.out.println("encountered unused demands" + unconsumedDemands); //TODO: remove after testing
@@ -77,7 +78,7 @@ public class SimFairGroupScheduler {
 	}
 
 
-	public static double splitDemandsPerRequest(double grantedDemand, Map<ISimCGroup, Double> requestedGroupRates, long timePassed) {
+	public static double splitDemandsPerRequest(double grantedDemand, Map<ISimCGroup, Double> requestedGroupRates, long timePassed, double maxRatePerCore) {
 
 		
 		if(grantedDemand <= 0.0)
@@ -92,7 +93,7 @@ public class SimFairGroupScheduler {
 		.filter(e -> e.getKey().size() > 0).mapToDouble( e -> {
 			var group = e.getKey();
 			var groupSlowDown = e.getValue() / grantedRateQuotient;
-			return group.grantDemand(grantedDemand * groupSlowDown, timePassed);
+			return group.grantDemand(grantedDemand * groupSlowDown, timePassed, maxRatePerCore);
 		}).sum();
 		
 		return unconsumedDemands;
@@ -145,6 +146,10 @@ public class SimFairGroupScheduler {
 	
 	public void setProcessingRate(double processingRate) {
 		this.processingRate = processingRate;
+	}
+	
+	public void setNoCores(int noCores) {
+		this.noCores = noCores;
 	}
 
 

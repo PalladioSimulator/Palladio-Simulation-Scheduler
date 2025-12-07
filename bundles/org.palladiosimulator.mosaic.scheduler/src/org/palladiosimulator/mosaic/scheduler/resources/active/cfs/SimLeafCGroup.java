@@ -14,6 +14,7 @@ import de.uka.ipd.sdq.simucomframework.core.Context;
 
 public class SimLeafCGroup implements ISimCGroup {
 	
+	private static final boolean THROTLING = false;
 	private final TaskObserver callback;
 	private Double processingRate = 1.0;
 	//defined in microseconds
@@ -35,14 +36,21 @@ public class SimLeafCGroup implements ISimCGroup {
 	}
 	
 	
-	public double grantDemand(double grantedDemand, long timePassed) {
+	public double grantDemand(double grantedDemand, long timePassed, double maxRatePerCore) {
 		var periods = timePassed / quota_period;
 		
 		var allowance = (quota_cores * quota_period * periods) / 1000;
 		var overQuota = 0.0;
-		if (grantedDemand > allowance) {
+		if (grantedDemand > allowance && THROTLING) {
 			grantedDemand = allowance;
 			overQuota = grantedDemand - allowance;
+		}
+		
+		var maxRateAllowance = scheduledDemands.size()*timePassed*maxRatePerCore;
+		if (grantedDemand > maxRateAllowance) {
+			
+			grantedDemand = maxRateAllowance;
+			overQuota = grantedDemand - maxRateAllowance;
 		}
 		
 		while(grantedDemand > 0.0 && scheduledDemands.size() > 0) {

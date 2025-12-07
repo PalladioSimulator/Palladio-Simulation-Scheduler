@@ -5,11 +5,11 @@ Bundle-SymbolicName: org.palladiosimulator.mosaic.scheduler;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.mosaic.scheduler
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Require-Bundle: de.uka.ipd.sdq.scheduler;bundle-version="5.0.0",
- de.uka.ipd.sdq.simucomframework;bundle-version="5.0.0",
- de.uka.ipd.sdq.simulation.abstractsimengine;bundle-version="5.0.0",
+Require-Bundle: de.uka.ipd.sdq.scheduler;bundle-version="5.2.2",
+ de.uka.ipd.sdq.simucomframework;bundle-version="5.2.2",
+ de.uka.ipd.sdq.simulation.abstractsimengine;bundle-version="5.2.2",
  de.uka.ipd.sdq.simucomframework.simucomstatus,
  org.palladiosimulator.pcm,
- de.uka.ipd.sdq.simucomframework.variables;bundle-version="5.0.0",
- de.uka.ipd.sdq.probfunction.math;bundle-version="5.0.0",
- de.uka.ipd.sdq.pcm.stochasticexpressions;bundle-version="5.0.0"
+ de.uka.ipd.sdq.simucomframework.variables;bundle-version="5.2.2",
+ de.uka.ipd.sdq.probfunction.math;bundle-version="5.2.0",
+ de.uka.ipd.sdq.pcm.stochasticexpressions;bundle-version="5.2.2"

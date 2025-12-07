@@ -10,8 +10,9 @@ import org.palladiosimulator.mosaic.scheduler.resources.active.cfs.SimLeafCGroup
 import org.palladiosimulator.mosaic.scheduler.resources.active.cfs.ISimCGroup;
 import org.palladiosimulator.mosaic.scheduler.resources.active.cfs.SimFairGroupScheduler;
 import org.palladiosimulator.mosaic.scheduler.resources.active.cfs.SimInnerCGroup;
-
 import de.uka.ipd.sdq.scheduler.ISchedulableProcess;
+
+
 import de.uka.ipd.sdq.scheduler.LoggingWrapper;
 import de.uka.ipd.sdq.scheduler.SchedulerModel;
 import de.uka.ipd.sdq.scheduler.entities.SchedulerEntity;
@@ -89,7 +90,8 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
         	var scheduledResource = (ScheduledResource) activeResource.get();
         	var rate = scheduledResource.getActiveResource().getProcessingRate_ProcessingResourceSpecification().getSpecification();
         	
-        	scheduler.setProcessingRate(Double.parseDouble(rate)*scheduledResource.getNumberOfInstances());
+        	scheduler.setProcessingRate(Double.parseDouble(rate));
+        	scheduler.setNoCores(scheduledResource.getNumberOfInstances());
         	
         	
         	var nestedGroups = createOrUpdateNestedCGroup(container);
@@ -127,7 +129,9 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
         	var rate = scheduledResource.getActiveResource().getProcessingRate_ProcessingResourceSpecification().getSpecification();
         	//Update ProcessingRate
         	//TODO: Evaluate static...
-        	scheduler.setProcessingRate(Double.parseDouble(rate)*scheduledResource.getNumberOfInstances());
+        	scheduler.setProcessingRate(Double.parseDouble(rate));
+        	scheduler.setNoCores(scheduledResource.getNumberOfInstances());
+        	
         	
         	
         	var nestedGroups = createOrUpdateNestedCGroup(container);
@@ -187,7 +191,7 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
 		Double passed_time = now - last_time;
 		double processedDemand = passed_time * scheduler.getProcessingRate();
 		
-		scheduler.grantDemand(processedDemand, passed_time.longValue() * 1000);
+		scheduler.grantDemand(processedDemand, passed_time.longValue() * 1000, scheduler.getProcessingRate());
 		
 
 		last_time = now;

@@ -12,7 +12,7 @@ public interface ISimCGroup {
 	 * @param timePassed Time passed given in µseconds
 	 * @return
 	 */
-	double grantDemand(double grantedDemand, long timePassed);
+	double grantDemand(double grantedDemand, long timePassed, double maxRatePerCore);
 
 	double getRate();
 

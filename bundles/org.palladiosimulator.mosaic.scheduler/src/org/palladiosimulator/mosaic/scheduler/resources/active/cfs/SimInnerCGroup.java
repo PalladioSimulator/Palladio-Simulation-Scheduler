@@ -39,7 +39,7 @@ public class SimInnerCGroup implements ISimCGroup {
 	
 	
 	@Override
-	public double grantDemand(double grantedDemand, long timePassed) {
+	public double grantDemand(double grantedDemand, long timePassed, double maxRatePerCore) {
 		var periods = timePassed / quota_period;
 		var allowance = (quota_cores * quota_period * periods) / 1000;
 		var overQuota = 0.0;
@@ -48,7 +48,7 @@ public class SimInnerCGroup implements ISimCGroup {
 			overQuota = grantedDemand - allowance;
 		}
 				
-		var unused = SimFairGroupScheduler.splitDemandsPerRequest(grantedDemand, requestedRates, timePassed);
+		var unused = SimFairGroupScheduler.splitDemandsPerRequest(grantedDemand, requestedRates, timePassed, maxRatePerCore);
 		
 		
 		return unused + overQuota;
