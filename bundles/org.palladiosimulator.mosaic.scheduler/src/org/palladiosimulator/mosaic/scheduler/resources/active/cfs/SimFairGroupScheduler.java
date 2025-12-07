@@ -62,7 +62,7 @@ public class SimFairGroupScheduler {
 		if(minFinishTime.isEmpty() || minFinishTime.getAsDouble() <= 0.0)
 			return -1.0;
 		
-		return Math.max( minFinishTime.getAsDouble() / (processingRate * noCores), JIFFY);
+		return Math.max( minFinishTime.getAsDouble() / (processingRate), JIFFY);
 	}
 	
 	

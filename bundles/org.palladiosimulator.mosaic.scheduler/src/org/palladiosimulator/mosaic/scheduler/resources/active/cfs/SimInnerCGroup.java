@@ -12,6 +12,7 @@ import de.uka.ipd.sdq.simucomframework.core.Context;
 
 public class SimInnerCGroup implements ISimCGroup {
 	
+	private static final boolean THROTLING = false;
 	private Double processingRate;
 	//defined in microseconds
 	private long quota_period = 1000000;//µs
@@ -43,7 +44,7 @@ public class SimInnerCGroup implements ISimCGroup {
 		var periods = timePassed / quota_period;
 		var allowance = (quota_cores * quota_period * periods) / 1000;
 		var overQuota = 0.0;
-		if (grantedDemand > allowance) { 
+		if (grantedDemand > allowance && THROTLING) { 
 			grantedDemand = allowance;
 			overQuota = grantedDemand - allowance;
 		}

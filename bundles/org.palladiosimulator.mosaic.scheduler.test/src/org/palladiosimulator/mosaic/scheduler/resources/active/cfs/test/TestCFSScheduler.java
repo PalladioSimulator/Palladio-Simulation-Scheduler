@@ -18,6 +18,7 @@ import de.uka.ipd.sdq.simucomframework.variables.cache.StoExCache;
 public class TestCFSScheduler {
 	
 	private static final int uS_IN_SECOND = 1000000;
+	private static final int uS_IN_MS = 1000;
 
 	static {
 		de.uka.ipd.sdq.probfunction.math.IProbabilityFunctionFactory probFunctionFactory = de.uka.ipd.sdq.probfunction.math.impl.ProbabilityFunctionFactoryImpl.getInstance();
@@ -41,18 +42,18 @@ public class TestCFSScheduler {
 		assertEquals(60.0, cgroup.getRemainingDemand());
 		assertEquals(10.0, cgroup.getMinDemand().orElse(0.0));
 		
-		cgroup.grantDemand(15.0, uS_IN_SECOND);
+		cgroup.grantDemand(15.0, uS_IN_SECOND, 1.0);
 		assertEquals(3, cgroup.size());
 		assertEquals(45.0, cgroup.getRemainingDemand());
 		assertEquals(5.0, cgroup.getMinDemand().orElse(0.0));
 		
-		cgroup.grantDemand(15.0, uS_IN_SECOND);
+		cgroup.grantDemand(15.0, uS_IN_SECOND, 1.0);
 		Mockito.verify(p1).activate();
 		assertEquals(2, cgroup.size());
 		assertEquals(30.0, cgroup.getRemainingDemand());
 		assertEquals(10.0, cgroup.getMinDemand().orElse(0.0));
 		
-		cgroup.grantDemand(25.0, uS_IN_SECOND);
+		cgroup.grantDemand(25.0, uS_IN_SECOND, 1.0);
 		Mockito.verify(p2).activate();
 		assertEquals(1, cgroup.size());
 		assertEquals(5.0, cgroup.getRemainingDemand());
@@ -83,7 +84,7 @@ public class TestCFSScheduler {
 		assertEquals(12.5, groupScheduler.getNextSchedule());
 		
 		//grant 100 units to the scheduler
-		groupScheduler.grantDemand(100.0, uS_IN_SECOND);
+		groupScheduler.grantDemand(100.0, uS_IN_SECOND, 10.0);
 		
 		assertEquals(80.0, cgroup1.getRemainingDemand());
 		assertEquals(20.0, cgroup2.getRemainingDemand());
@@ -91,7 +92,7 @@ public class TestCFSScheduler {
 		assertEquals(2.5, groupScheduler.getNextSchedule());
 		
 		//grant 25 units to the scheduler
-		groupScheduler.grantDemand(25.0, uS_IN_SECOND);
+		groupScheduler.grantDemand(25.0, uS_IN_SECOND, 10.0);
 		Mockito.verify(p2).activate();
 		assertEquals(75.0, cgroup1.getRemainingDemand());
 		assertEquals(0.0, cgroup2.getRemainingDemand());
@@ -134,7 +135,7 @@ public class TestCFSScheduler {
 		assertEquals(12.5, groupScheduler.getNextSchedule());
 		
 		//grant 100 units to the scheduler
-		groupScheduler.grantDemand(100.0, uS_IN_SECOND);
+		groupScheduler.grantDemand(100.0, uS_IN_SECOND, 10.0);
 		
 		assertEquals(80.0, cgroup1b.getRemainingDemand());
 		assertEquals(20.0, cgroup2b.getRemainingDemand());
@@ -142,12 +143,64 @@ public class TestCFSScheduler {
 		assertEquals(2.5, groupScheduler.getNextSchedule());
 		
 		//grant 25 units to the scheduler
-		groupScheduler.grantDemand(25.0, uS_IN_SECOND);
+		groupScheduler.grantDemand(25.0, uS_IN_SECOND, 10.0);
 		Mockito.verify(p2).activate();
 		assertEquals(75.0, cgroup1b.getRemainingDemand());
 		assertEquals(0.0, cgroup2b.getRemainingDemand());
 		
 		assertEquals(7.5, groupScheduler.getNextSchedule());
+		
+		
+	}
+	
+	@Test
+	public void testNestedGroupSchedulerMultiCoreThrottling() {
+		
+		var groupScheduler = new SimFairGroupScheduler();
+		groupScheduler.setProcessingRate(5.0);
+		groupScheduler.setNoCores(2);
+		
+		var cgroup1a = new SimInnerCGroup(Mockito.mock(TaskObserver.class));
+		cgroup1a.setRate("1.0");
+		groupScheduler.addGroup(cgroup1a, "cgroup1a", true);
+		
+		var cgroup1b = new SimLeafCGroup(Mockito.mock(TaskObserver.class));
+		cgroup1b.setRate("1.0");
+		groupScheduler.addGroup(cgroup1b, "cgroup1b", false);
+		cgroup1a.addSubGroup(cgroup1b);
+		
+		var p1 = Mockito.mock(ISchedulableProcess.class);
+		groupScheduler.enqueueProcessDemand(cgroup1b, p1, 100.0);
+
+		var cgroup2a = new SimInnerCGroup(Mockito.mock(TaskObserver.class));
+		cgroup2a.setRate("4.0");
+		groupScheduler.addGroup(cgroup2a, "cgroup2a", true);
+		
+		var cgroup2b = new SimLeafCGroup(Mockito.mock(TaskObserver.class));
+		cgroup2b.setRate("1.0");
+		groupScheduler.addGroup(cgroup2b, "cgroup2b", false);
+		cgroup2a.addSubGroup(cgroup2b);
+		
+		var p2 = Mockito.mock(ISchedulableProcess.class);
+		groupScheduler.enqueueProcessDemand(cgroup2b, p2, 100.0);		//was 100 adapted due to concrete demand adaptation in sim
+
+		assertEquals(25.0, groupScheduler.getNextSchedule());
+		
+		//grant 100 units to the scheduler
+		groupScheduler.grantDemand(100.0, 10*uS_IN_MS, 5.0/uS_IN_MS);
+		
+		assertEquals(80.0, cgroup1b.getRemainingDemand());
+		assertEquals(50.0, cgroup2b.getRemainingDemand());
+		
+		assertEquals(12.5, groupScheduler.getNextSchedule());
+		
+		//grant 500 units to the scheduler, but is limited to 50 per group as per rate
+		groupScheduler.grantDemand(500.0, 10*uS_IN_MS, 5.0/uS_IN_MS);
+		Mockito.verify(p2).activate();
+		assertEquals(30.0, cgroup1b.getRemainingDemand());
+		assertEquals(0.0, cgroup2b.getRemainingDemand());
+		
+		assertEquals(6.0, groupScheduler.getNextSchedule());
 		
 		
 	}

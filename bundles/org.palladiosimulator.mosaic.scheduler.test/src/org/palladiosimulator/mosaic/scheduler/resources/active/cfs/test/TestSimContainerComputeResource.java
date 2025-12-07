@@ -11,9 +11,9 @@ import org.palladiosimulator.mosaic.scheduler.resources.active.SimContainerCompu
 
 import de.uka.ipd.sdq.scheduler.SchedulerModel;
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
-import de.uka.ipd.sdq.simucomframework.ResourceRegistry;
-import de.uka.ipd.sdq.simucomframework.model.SimuComModel;
-import de.uka.ipd.sdq.simucomframework.resources.SimulatedResourceContainer;
+import de.uka.ipd.sdq.simucomframework.core.ResourceRegistry;
+import de.uka.ipd.sdq.simucomframework.core.model.SimuComModel;
+import de.uka.ipd.sdq.simucomframework.core.resources.SimulatedResourceContainer;
 import de.uka.ipd.sdq.simucomframework.variables.cache.StoExCache;
 import de.uka.ipd.sdq.simulation.abstractsimengine.ISimEngineFactory;
 
