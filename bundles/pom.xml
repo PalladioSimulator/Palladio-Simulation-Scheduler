@@ -13,6 +13,7 @@
 	
 	<modules>
 		<module>de.uka.ipd.sdq.scheduler</module>
+		<module>org.palladiosimulator.mosaic.scheduler</module>
 	</modules>
 	
 </project>
