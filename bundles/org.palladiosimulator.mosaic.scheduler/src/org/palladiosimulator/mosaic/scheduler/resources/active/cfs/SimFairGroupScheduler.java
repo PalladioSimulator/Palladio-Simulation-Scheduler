@@ -23,7 +23,7 @@ public class SimFairGroupScheduler {
 	/**
      * The minimum amount of time used for scheduling an event
      */
-    private final static double JIFFY = 1e-9;
+    private final static double JIFFY = 1e-3;
 
     
 	/*

@@ -29,7 +29,7 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
 	
 	
 	private SimFairGroupScheduler scheduler;
-	private SimLeafCGroup rootGroup;
+	private SimLeafCGroup hostGroup;
 	final static int QUOTA_PERIOD_MSEC = 100;
     protected static final String CPU_RESOUREC_TYPE_ID = "_oro4gG3fEdy4YaaT-RYrLQ";
 
@@ -191,7 +191,7 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
 		Double passed_time = now - last_time;
 		double processedDemand = passed_time * scheduler.getProcessingRate();
 		
-		scheduler.grantDemand(processedDemand, passed_time.longValue() * 1000, scheduler.getProcessingRate());
+		scheduler.grantDemand(processedDemand, Math.round((passed_time* 1000)) , scheduler.getProcessingRate());
 		
 
 		last_time = now;
@@ -222,9 +222,9 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
 	public void start() {
 		initScheduler();
 
-		rootGroup = new SimLeafCGroup(this);
-		rootGroup.setRate("100");
-		scheduler.addGroup(rootGroup, this.getId(), true);
+		hostGroup = new SimLeafCGroup(this);
+		hostGroup.setRate("100");
+		scheduler.addGroup(hostGroup, this.getId(), true);
 		
 	}
 
@@ -257,7 +257,7 @@ public class SimContainerComputeResource extends AbstractActiveResource implemen
 
 		toNow();
 		// extract CGroup
-		var group = rootGroup;
+		var group = hostGroup;
 
 		String groupId = (String) parameterMap.get("__MOSAIC_CONTAINER_ID");
 		if (groupId == null)// TODO this does not work as it is the wrong id
