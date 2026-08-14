@@ -6,4 +6,4 @@ Fragment-Host: de.uka.ipd.sdq.scheduler
 Automatic-Module-Name: de.uka.ipd.sdq.scheduler.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.junit;bundle-version="4.13.0",
- org.mockito.mockito-merged;bundle-version="3.3.3"
+ org.mockito.mockito-core
